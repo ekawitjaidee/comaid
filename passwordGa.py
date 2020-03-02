@@ -1,8 +1,8 @@
 import random
 
 pop = [] #poppulation size = 20
-popsize = 20
-indi = [0]*20 #individual size = 20
+popsize = input('Enter population size = ')
+indi = [0]*popsize #individual size = 20
 Eliterate = 10 #10%
 
 target = [0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9]
@@ -10,7 +10,7 @@ target = [0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9]
 def randomindi():
   get = [0]*20
   for i in range(popsize):
-    for j in range(len(indi)):
+    for j in range(20):
       get[j] = random.randint(0,9)  
     indi[i]=get
     get = [0]*20
@@ -118,10 +118,10 @@ print("gen1 fitness max =" + str(poppulation[0][1]))
 # print(j)
 gen = 1
 
-while poppulation[0][1] != popsize:
+while poppulation[0][1] != 20:
   newpop = []
 
-  for i in range((len(poppulation)*Eliterate)/100):
+  for i in range((len(poppulation)*Eliterate)/100): #Elite append 10% of parent to offspring
     newpop.append(poppulation[i][0])
 
 
@@ -143,7 +143,7 @@ while poppulation[0][1] != popsize:
     poppulation.append((newpop[i],0)) 
   poppulation = fitnesscal(poppulation,target)
   poppulation = sortfit(poppulation)
-  print("gen"+str(gen)+"fitness max = "+str(poppulation[0][1])+" "+str(poppulation[0][0]))  
+  print("gen"+str(gen)+" fitness max = "+str(poppulation[0][1])+" "+str(poppulation[0][0]))  
   gen +=1  
 
   # for i in range(len(poppulation)):
