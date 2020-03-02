@@ -59,8 +59,28 @@ def bitour(p): #binarytournament
   else:
     return pr2   
 
+def rourettewheel(p):
+  sumfitness = 0
+  prob = [0]*len(p)
+  for i in range(len(p)):
+    sumfitness += p[i][1] 
+  # print(sumfitness)
+  for i in range(len(p)):
+    # print(p[i][1])
+    prob[i] = float(p[i][1])/float(sumfitness)
+  # print(prob)
+  fp = prob[0] #frist probability
+  lp = prob[len(prob)-1] # last probability
+  # print(str(lp)+"fp")
+  rp = random.uniform(lp,fp) #range of probability
+  # print(str(rp)+"rp")
+  for i in range(len(prob)):
+    if(prob[i]>=rp and rp>=prob[i+1]):
+      return p[i][0]
+
+
 def xover(p1,p2):
-  percent = len(p1)/2 # 50 percent of parent
+  percent = random.randint(0,19)
   p1fh = [0]*len(p1)
   p1sh = [0]*len(p1)
   p2fh = [0]*len(p1)
@@ -77,9 +97,10 @@ def xover(p1,p2):
   return p1,p2
 
 def mutation(o):
-  Mutarate = 0.25*100
+  Mutarate = 0.05*100
+  # print(Mutarate)
   for i in range(len(o)):
-    if random.randint(0,100) <= Mutarate:
+    if random.randint(0,100) <= int(Mutarate):
       o[i] = random.randint(0,9)
   return o
 
@@ -90,7 +111,13 @@ poppulation = randomindi()
 poppulation = fitnesscal(poppulation,target)
 poppulation = sortfit(poppulation)
 print("gen1 fitness max =" + str(poppulation[0][1]))
+# for i in range(len(poppulation)):
+#   if i <2:
+#     print(poppulation[i])
+# j = xover(poppulation[0][0],poppulation[1][0])
+# print(j)
 gen = 1
+
 while poppulation[0][1] != popsize:
   newpop = []
 
@@ -98,27 +125,28 @@ while poppulation[0][1] != popsize:
     newpop.append(poppulation[i][0])
 
 
-  while len(newpop) < popsize:
+  while len(newpop) < popsize:  
     parent1 = bitour(poppulation)
     parent2 = bitour(poppulation)
+    # parent1 = rourettewheel(poppulation)
+    # parent2 = rourettewheel(poppulation)
     while parent1 == parent2:
       parent2 = bitour(poppulation)
-
+      # parent2 = rourettewheel(poppulation)
     child=xover(parent1,parent2)
     o1 = mutation(child[0])
     o2 = mutation(child[1])
     newpop.append(o1)
     newpop.append(o2)
-    poppulation = []
-    for i in range(len(newpop)):
-      poppulation.append((newpop[i],0)) 
-    poppulation = fitnesscal(poppulation,target)
-    poppulation = sortfit(poppulation)
-    print("gen"+str(gen)+"fitness max = "+str(poppulation[0][1])+" "+str(poppulation[0][0]))  
-    gen +=1  
+  poppulation = []  
+  for i in range(len(newpop)):
+    poppulation.append((newpop[i],0)) 
+  poppulation = fitnesscal(poppulation,target)
+  poppulation = sortfit(poppulation)
+  print("gen"+str(gen)+"fitness max = "+str(poppulation[0][1])+" "+str(poppulation[0][0]))  
+  gen +=1  
 
   # for i in range(len(poppulation)):
-  # print(str(poppulation[i]))
+  #  print(str(poppulation[i]))
   # for i in range(len(newpop)):
   #   print(newpop[i])
-  
