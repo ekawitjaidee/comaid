@@ -1,9 +1,9 @@
 import random
 
 pop = [] #poppulation size = 20
-popsize = input('Enter population size = ')
-Ps = input('Binary tournament enter 1 | Roulette wheel enter 2 = ')
-indi = [0]*popsize #individual size = 20
+popsize = int(input('Enter population size = '))
+Ps = input('Binary tournament enter 1 | Roulette wheel enter 2 = ') #Parent selection
+pops = [0]*popsize #poppulation size = 20
 Eliterate = 10 #10%
 
 target = [0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9]
@@ -13,11 +13,11 @@ def randomindi():
   for i in range(popsize):
     for j in range(20):
       get[j] = random.randint(0,9)  
-    indi[i]=get
+    pops[i]=get
     get = [0]*20
 
-  for i in range(len(indi)):
-    pop.append((indi[i],0))
+  for i in range(len(pops)):
+    pop.append((pops[i],0))
   return pop
 
 def fitnesscal(p,target):
@@ -114,15 +114,19 @@ gen = 1
 print("gen"+str(gen)+" Max fitness = "+str(poppulation[0][1])+" "+str(poppulation[0][0])+" ("+str((poppulation[0][1]/20.0)*100)+")%") 
 gen = 2 # print 1st generation alredy
 
-while poppulation[0][1] != 20:
+while int(poppulation[0][1]) != 20:
   newpop = []
 
-  for i in range((len(poppulation)*Eliterate)/100): #Elite append 10% of parent to offspring
+  for i in range(int((len(poppulation)*Eliterate)/100)): #Elite append 10% of parent to offspring
     newpop.append(poppulation[i][0])
-
 
   while len(newpop) < popsize:
     # Parent selection Binary tournament or roulette wheel
+    parent1 = []
+    parent2 = []
+    child = []
+    o1 = []
+    o2 = []
     if Ps == 1: 
       parent1 = bitour(poppulation)
       parent2 = bitour(poppulation)
@@ -148,5 +152,5 @@ while poppulation[0][1] != 20:
     poppulation.append((newpop[i],0)) 
   poppulation = fitnesscal(poppulation,target)
   poppulation = sortfit(poppulation)
-  print("gen"+str(gen)+" Max fitness = "+str(poppulation[0][1])+" "+str(poppulation[0][0])+" ("+str((poppulation[0][1]/20.0)*100)+")%")  
+  print("gen"+str(gen)+" Max fitness = "+str(poppulation[0][1])+" "+str(poppulation[0][0])+" ("+str((poppulation[0][1]/20.0)*100)+" %)")  
   gen +=1  
