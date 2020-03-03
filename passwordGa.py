@@ -2,6 +2,7 @@ import random
 
 pop = [] #poppulation size = 20
 popsize = input('Enter population size = ')
+Ps = input('Binary tournament enter 1 | Roulette wheel enter 2 = ')
 indi = [0]*popsize #individual size = 20
 Eliterate = 10 #10%
 
@@ -62,24 +63,23 @@ def bitour(p): #binarytournament
 def rourettewheel(p):
   sumfitness = 0
   prob = [0]*len(p)
+
   for i in range(len(p)):
     sumfitness += p[i][1] 
-  # print(sumfitness)
+
   for i in range(len(p)):
-    # print(p[i][1])
     prob[i] = float(p[i][1])/float(sumfitness)
-  # print(prob)
+
   fp = prob[0] #frist probability
   lp = prob[len(prob)-1] # last probability
-  # print(str(lp)+"fp")
   rp = random.uniform(lp,fp) #range of probability
-  # print(str(rp)+"rp")
+
   for i in range(len(prob)):
     if(prob[i]>=rp and rp>=prob[i+1]):
       return p[i][0]
 
 
-def xover(p1,p2):
+def xover(p1,p2): #Crossover
   percent = random.randint(0,19)
   p1fh = [0]*len(p1)
   p1sh = [0]*len(p1)
@@ -97,8 +97,8 @@ def xover(p1,p2):
   return p1,p2
 
 def mutation(o):
-  Mutarate = 0.05*100
-  # print(Mutarate)
+  Mutarate = 0.05*100 # mutation rate = (1/individual size) * 100 
+
   for i in range(len(o)):
     if random.randint(0,100) <= int(Mutarate):
       o[i] = random.randint(0,9)
@@ -106,17 +106,13 @@ def mutation(o):
 
 
 poppulation = []
-poppulation = randomindi()
+poppulation = randomindi() #Add random number into population
 
-poppulation = fitnesscal(poppulation,target)
-poppulation = sortfit(poppulation)
-print("gen1 fitness max =" + str(poppulation[0][1]))
-# for i in range(len(poppulation)):
-#   if i <2:
-#     print(poppulation[i])
-# j = xover(poppulation[0][0],poppulation[1][0])
-# print(j)
-gen = 1
+poppulation = fitnesscal(poppulation,target) #Find fitness first generation
+poppulation = sortfit(poppulation)#sorting fitness
+gen = 1 
+print("gen"+str(gen)+" Max fitness = "+str(poppulation[0][1])+" "+str(poppulation[0][0])+" ("+str((poppulation[0][1]/20.0)*100)+")%") 
+gen = 2 # print 1st generation alredy
 
 while poppulation[0][1] != 20:
   newpop = []
@@ -125,17 +121,26 @@ while poppulation[0][1] != 20:
     newpop.append(poppulation[i][0])
 
 
-  while len(newpop) < popsize:  
-    parent1 = bitour(poppulation)
-    parent2 = bitour(poppulation)
-    # parent1 = rourettewheel(poppulation)
-    # parent2 = rourettewheel(poppulation)
-    while parent1 == parent2:
+  while len(newpop) < popsize:
+    # Parent selection Binary tournament or roulette wheel
+    if Ps == 1: 
+      parent1 = bitour(poppulation)
       parent2 = bitour(poppulation)
-      # parent2 = rourettewheel(poppulation)
+    elif Ps == 2:
+      parent1 = rourettewheel(poppulation)
+      parent2 = rourettewheel(poppulation)
+    while parent1 == parent2:
+      if Ps == 1:
+        parent2 = bitour(poppulation)
+      elif Ps == 2 :
+        parent2 = rourettewheel(poppulation)
+    
+    #Crossover of parents
     child=xover(parent1,parent2)
+    #Mutation child 
     o1 = mutation(child[0])
     o2 = mutation(child[1])
+    #Add offspring
     newpop.append(o1)
     newpop.append(o2)
   poppulation = []  
@@ -143,10 +148,5 @@ while poppulation[0][1] != 20:
     poppulation.append((newpop[i],0)) 
   poppulation = fitnesscal(poppulation,target)
   poppulation = sortfit(poppulation)
-  print("gen"+str(gen)+" fitness max = "+str(poppulation[0][1])+" "+str(poppulation[0][0]))  
+  print("gen"+str(gen)+" Max fitness = "+str(poppulation[0][1])+" "+str(poppulation[0][0])+" ("+str((poppulation[0][1]/20.0)*100)+")%")  
   gen +=1  
-
-  # for i in range(len(poppulation)):
-  #  print(str(poppulation[i]))
-  # for i in range(len(newpop)):
-  #   print(newpop[i])
